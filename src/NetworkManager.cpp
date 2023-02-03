@@ -8,6 +8,22 @@
 /// </summary>
 void NetworkManager::Init()
 {
+	listenSocket = SocketUtil::CreateTCPSocket(SocketAddressFamily::INET);
+	assert(listenSocket); //socket must be assigned
+
+	//set non blocking mode
+	listenSocket->SetNonBlockingMode(true);
+
+	//set up address
+	SocketAddressPtr listenAddress = SocketAddressFactory::CreateIPv4FromString("216.93.149.19:8080");
+	assert(listenAddress); //listen address must be assigned
+
+	//bind address to socket + error check
+	if (listenSocket->Bind(*listenAddress) != NO_ERROR) {
+
+		SocketUtil::ReportError("Binding listening socket");
+		ExitProcess(1);
+	}
 }
 
 /// <summary>
@@ -21,6 +37,17 @@ void NetworkManager::Init()
 /// </summary>
 void NetworkManager::CheckForNewConnections()
 {
+	if (listenSocket->Listen() != NO_ERROR) {
+		SocketUtil::ReportError("Listening on Listen Socket");
+		return;
+	}
+
+	SocketAddress incominigAddress;
+	TCPSocketPtr conSocket = listenSocket->Accept(incominigAddress);
+
+	while (conSocket != nullptr) {
+		conSocket = listenSocket->Accept(incominigAddress);
+	}
 }
 
 /// <summary>
@@ -30,10 +57,12 @@ void NetworkManager::CheckForNewConnections()
 /// <param name="message">Message to send</param>
 void NetworkManager::SendMessageToPeers(const std::string& message)
 {
+
 }
 
 void NetworkManager::PostMessagesFromPeers()
 {
+	
 }
 
 /// <summary>
@@ -42,4 +71,5 @@ void NetworkManager::PostMessagesFromPeers()
 /// <param name="targetAddress">The address to try to connect to.</param>
 void NetworkManager::AttemptToConnect(SocketAddressPtr targetAddress)
 {
+
 }
