@@ -47,6 +47,8 @@ void NetworkManager::CheckForNewConnections()
 
 	while (conSocket != nullptr) {
 		conSocket = listenSocket->Accept(incominigAddress);
+		std::cout << "Accepted Connection from: " << incominigAddress.ToString() << std::endl;
+		messageLog.AddMessage("Accepted Connection from: " + incominigAddress.ToString());
 	}
 }
 
@@ -57,7 +59,7 @@ void NetworkManager::CheckForNewConnections()
 /// <param name="message">Message to send</param>
 void NetworkManager::SendMessageToPeers(const std::string& message)
 {
-
+	listenSocket->Send(message.c_str(), message.length());
 }
 
 void NetworkManager::PostMessagesFromPeers()
@@ -71,5 +73,15 @@ void NetworkManager::PostMessagesFromPeers()
 /// <param name="targetAddress">The address to try to connect to.</param>
 void NetworkManager::AttemptToConnect(SocketAddressPtr targetAddress)
 {
+	assert(targetAddress);
 
+	if (listenSocket->Connect(*targetAddress) != NO_ERROR) {
+		SocketUtil::ReportError("Connecting to Server");
+		return;
+	}
+
+	//connected to server
+	std::string msg = "User Joined";
+	SendMessageToPeers(msg);
+	//listenSocket->Send(msg.c_str(), msg.length());
 }
