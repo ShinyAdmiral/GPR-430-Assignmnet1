@@ -24,4 +24,5 @@ private:
 	MessageLog& messageLog;
 	TCPSocketPtr listenSocket;
 	std::unordered_map<SocketAddress, TCPSocketPtr> openConnections;
+	std::string defaultAddress = "127.0.0.1";
 };

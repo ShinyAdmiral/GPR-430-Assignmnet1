@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
                     currentText.push_back(key);
                 }
 
-                if (key == SDLK_BACKSPACE)
+                if (key == SDLK_BACKSPACE && !currentText.empty())
                 {
                     currentText.pop_back();
                 }
