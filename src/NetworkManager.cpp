@@ -83,7 +83,7 @@ void NetworkManager::PostMessagesFromPeers()
 		//}
 		
 		std::string receivedMsg(buffer, bytesReceived);
-		messageLog.AddMessage(receivedMsg);
+		messageLog.AddMessage(connection.first.ToString() + ": " + receivedMsg);
 	}
 }
 
@@ -117,8 +117,5 @@ void NetworkManager::AttemptToConnect(SocketAddressPtr targetAddress)
 	connectionSocket->SetNonBlockingMode(true);
 	//add connection to the map whn successful
 	openConnections[*connectionAddress] = connectionSocket;
-
-	//connected to server
-	std::string msg = "User Joined";
-	SendMessageToPeers(msg);
+	messageLog.AddMessage("Connected...");
 }
